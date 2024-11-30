@@ -85,6 +85,81 @@
       margin-top: 20px;
       font-weight: bold;
     }
+    /* Animation keyframes */
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    /* Updated result styles */
+    .result {
+        animation: slideIn 0.5s ease-out;
+    }
+
+    .result p {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        animation: slideIn 0.5s ease-out;
+    }
+
+    /* Score color classes */
+    .score-horrible {
+        background-color: #ff1a1a;
+        color: white;
+        box-shadow: 0 0 10px rgba(255, 26, 26, 0.3);
+    }
+
+    .score-bad {
+        background-color: #ff4d4d;
+        color: white;
+        box-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
+    }
+
+    .score-regular {
+        background-color: #ffa64d;
+        color: white;
+        box-shadow: 0 0 10px rgba(255, 166, 77, 0.3);
+    }
+
+    .score-good {
+        background-color: #80ff80;
+        color: #2c3e50;
+        box-shadow: 0 0 10px rgba(128, 255, 128, 0.3);
+    }
+
+    .score-excellent {
+        background-color: #33ff33;
+        color: #2c3e50;
+        box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+    }
+
+    .score-perfect {
+        background-color: #00cc00;
+        color: white;
+        box-shadow: 0 0 10px rgba(0, 204, 0, 0.3);
+        animation: pulse 2s infinite;
+    }
+
+    .feedback {
+        animation: slideIn 0.5s ease-out;
+        transition: all 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -194,8 +269,8 @@
     // Calculando os resultados individuais
 
     // TPS Score (peso 35)
-    const tpsScore = ((tps1m + tps5m + tps15m) / 3) * 35;
 
+    const tpsScore = ((tps1m + tps5m + tps15m) / 3) * 3;
     // MSPT Score (peso 20)
     const msptScore = ((50 / msptMed) * 20) - ((msptMax / 100) * 5);
 
@@ -213,13 +288,41 @@
     // Calculando a média final
     const media = (tpsScore + msptScore + pingScore + chunksScore + entidadesScore) / 5;
 
-    // Exibindo os resultados
-    document.getElementById('tpsResult').textContent = `TPS Score: ${tpsScore.toFixed(2)}`;
-    document.getElementById('msptResult').textContent = `MSPT Score: ${msptScore.toFixed(2)}`;
-    document.getElementById('pingResult').textContent = `Ping Score: ${pingScore.toFixed(2)}`;
-    document.getElementById('chunksResult').textContent = `Chunks Score: ${chunksScore.toFixed(2)}`;
-    document.getElementById('entidadesResult').textContent = `Entidades Score: ${entidadesScore.toFixed(2)}`;
-    document.getElementById('mediaResult').textContent = `Média Final: ${media.toFixed(2)}`;
+    // Helper function to get color class based on score
+    function getColorClass(score) {
+        if (score <= 10) return 'score-horrible';
+        if (score <= 30) return 'score-bad';
+        if (score <= 50) return 'score-regular';
+        if (score <= 70) return 'score-good';
+        if (score <= 90) return 'score-excellent';
+        return 'score-perfect';
+    }
+
+    // Updating results with color classes
+    const tpsElement = document.getElementById('tpsResult');
+    const msptElement = document.getElementById('msptResult');
+    const pingElement = document.getElementById('pingResult');
+    const chunksElement = document.getElementById('chunksResult');
+    const entidadesElement = document.getElementById('entidadesResult');
+    const mediaElement = document.getElementById('mediaResult');
+
+    tpsElement.textContent = `TPS Score: ${tpsScore.toFixed(2)}`;
+    tpsElement.className = getColorClass(tpsScore);
+
+    msptElement.textContent = `MSPT Score: ${msptScore.toFixed(2)}`;
+    msptElement.className = getColorClass(msptScore);
+
+    pingElement.textContent = `Ping Score: ${pingScore.toFixed(2)}`;
+    pingElement.className = getColorClass(pingScore);
+
+    chunksElement.textContent = `Chunks Score: ${chunksScore.toFixed(2)}`;
+    chunksElement.className = getColorClass(chunksScore);
+
+    entidadesElement.textContent = `Entidades Score: ${entidadesScore.toFixed(2)}`;
+    entidadesElement.className = getColorClass(entidadesScore);
+
+    mediaElement.textContent = `Média Final: ${media.toFixed(2)}`;
+    mediaElement.className = getColorClass(media);
 
     // Feedback baseado na média
     let feedback = "";
