@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Benchmark</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 15px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .result {
+      font-size: 18px;
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #e3e3e3;
+      border-radius: 4px;
+    }
+    .result p {
+      margin: 5px 0;
+    }
+    .score-table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .score-table, .score-table th, .score-table td {
+      border: 1px solid #ddd;
+    }
+    .score-table th, .score-table td {
+      padding: 10px;
+      text-align: center;
+    }
+    .score-table th {
+      background-color: #f2f2f2;
+    }
+    .feedback {
+      font-size: 20px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Calculadora de Benchmark</h1>
+  
+  <label for="tps1m">TPS (1 Minuto):</label>
+  <input type="number" id="tps1m" placeholder="Digite o TPS de 1 minuto" />
+
+  <label for="tps5m">TPS (5 Minutos):</label>
+  <input type="number" id="tps5m" placeholder="Digite o TPS de 5 minutos" />
+
+  <label for="tps15m">TPS (15 Minutos):</label>
+  <input type="number" id="tps15m" placeholder="Digite o TPS de 15 minutos" />
+
+  <label for="msptMed">MSPT (Média):</label>
+  <input type="number" id="msptMed" placeholder="Digite o MSPT mediano" />
+
+  <label for="msptMax">MSPT (Máximo):</label>
+  <input type="number" id="msptMax" placeholder="Digite o MSPT máximo" />
+
+  <label for="pingMed">Ping (Média):</label>
+  <input type="number" id="pingMed" placeholder="Digite o Ping mediano" />
+
+  <label for="pingMax">Ping (Máximo):</label>
+  <input type="number" id="pingMax" placeholder="Digite o Ping máximo" />
+
+  <label for="chunks">Chunks Carregados:</label>
+  <input type="number" id="chunks" placeholder="Digite o número de Chunks carregados" />
+
+  <label for="entidades">Entidades Ativas:</label>
+  <input type="number" id="entidades" placeholder="Digite o número de Entidades ativas" />
+
+  <button onclick="calcular()">Calcular</button>
+
+  <div class="result" id="resultado">
+    <p id="tpsResult">TPS Score: </p>
+    <p id="msptResult">MSPT Score: </p>
+    <p id="pingResult">Ping Score: </p>
+    <p id="chunksResult">Chunks Score: </p>
+    <p id="entidadesResult">Entidades Score: </p>
+    <p id="mediaResult">Média Final: </p>
+  </div>
+
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th>Faixa de Pontuação</th>
+        <th>Classificação</th>
+        <th>Feedback</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0 - 10</td>
+        <td>Horrível</td>
+        <td>Servidor quebrado, performance inaceitável.</td>
+      </tr>
+      <tr>
+        <td>11 - 30</td>
+        <td>Ruim</td>
+        <td>Performance fraca, instabilidade e lag.</td>
+      </tr>
+      <tr>
+        <td>31 - 50</td>
+        <td>Regular</td>
+        <td>Desempenho aceitável, mas com falhas ocasionais.</td>
+      </tr>
+      <tr>
+        <td>51 - 70</td>
+        <td>Bom</td>
+        <td>Desempenho estável, algumas pequenas falhas.</td>
+      </tr>
+      <tr>
+        <td>71 - 90</td>
+        <td>Ótimo</td>
+        <td>Desempenho excelente, sem grandes falhas.</td>
+      </tr>
+      <tr>
+        <td>+90</td>
+        <td>Perfeito</td>
+        <td>Desempenho impecável, servidor muito bem otimizado.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+  function calcular() {
+    // Obtendo os valores inseridos pelo usuário
+    const tps1m = parseFloat(document.getElementById('tps1m').value);
+    const tps5m = parseFloat(document.getElementById('tps5m').value);
+    const tps15m = parseFloat(document.getElementById('tps15m').value);
+
+    const msptMed = parseFloat(document.getElementById('msptMed').value);
+    const msptMax = parseFloat(document.getElementById('msptMax').value);
+
+    const pingMed = parseFloat(document.getElementById('pingMed').value);
+    const pingMax = parseFloat(document.getElementById('pingMax').value);
+
+    const chunks = parseFloat(document.getElementById('chunks').value);
+    const entidades = parseFloat(document.getElementById('entidades').value);
+
+    // Calculando os resultados individuais
+
+    // TPS Score (peso 35)
+    const tpsScore = ((tps1m + tps5m + tps15m) / 3) * 35;
+
+    // MSPT Score (peso 20)
+    const msptScore = ((50 / msptMed) * 20) - ((msptMax / 100) * 5);
+
+    // Ping Score (peso 15)
+    const pingScore = ((100 / pingMed) * 15) - ((pingMax / 500) * 5);
+
+    // Chunks Score (peso 15)
+    const referenciaChunks = 10000;
+    const chunksScore = ((tps1m / 20) * (chunks / referenciaChunks)) * 15;
+
+    // Entidades Score (peso 15)
+    const referenciaEntidades = 2000;
+    const entidadesScore = ((tps1m / 20) * (entidades / referenciaEntidades)) * 15;
+
+    // Calculando a média final
+    const media = (tpsScore + msptScore + pingScore + chunksScore + entidadesScore) / 5;
+
+    // Exibindo os resultados
+    document.getElementById('tpsResult').textContent = `TPS Score: ${tpsScore.toFixed(2)}`;
+    document.getElementById('msptResult').textContent = `MSPT Score: ${msptScore.toFixed(2)}`;
+    document.getElementById('pingResult').textContent = `Ping Score: ${pingScore.toFixed(2)}`;
+    document.getElementById('chunksResult').textContent = `Chunks Score: ${chunksScore.toFixed(2)}`;
+    document.getElementById('entidadesResult').textContent = `Entidades Score: ${entidadesScore.toFixed(2)}`;
+    document.getElementById('mediaResult').textContent = `Média Final: ${media.toFixed(2)}`;
+
+    // Feedback baseado na média
+    let feedback = "";
+    if (media <= 10) {
+      feedback = "Servidor quebrado, performance inaceitável.";
+    } else if (media <= 30) {
+      feedback = "Performance fraca, instabilidade e lag.";
+    } else if (media <= 50) {
+      feedback = "Desempenho aceitável, mas com falhas ocasionais.";
+    } else if (media <= 70) {
+      feedback = "Desempenho estável, algumas pequenas falhas.";
+    } else if (media <= 90) {
+      feedback = "Desempenho excelente, sem grandes falhas.";
+    } else {
+      feedback = "Desempenho impecável, servidor muito bem otimizado.";
+    }
+
+    document.getElementById('feedback').textContent = feedback;
+  }
+</script>
+
+</body>
+</html>
